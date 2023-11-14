@@ -1,0 +1,24 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model CatUser {
+  id          Int           @id @default(autoincrement())
+  catId       String        @unique
+  catName     String
+  createdAt   DateTime      @default(now())
+  CatRegister CatRegister[]
+}
+
+model CatRegister {
+  id        Int      @id @default(autoincrement())
+  catUserId Int
+  createdAt DateTime @default(now())
+
+  catUser CatUser @relation(fields: [catUserId], references: [id])
+}

@@ -1,0 +1,18 @@
+-- CreateTable
+CREATE TABLE "CatUser" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "catId" TEXT NOT NULL,
+    "catName" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- CreateTable
+CREATE TABLE "CatRegister" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "catUserId" INTEGER NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "CatRegister_catUserId_fkey" FOREIGN KEY ("catUserId") REFERENCES "CatUser" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "CatUser_catId_key" ON "CatUser"("catId");

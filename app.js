@@ -1,18 +1,76 @@
 const express = require('express')
 const cors = require('cors')
+const { getCats, getCatImage } = require('./utils/api')
+const { PrismaClient, Prisma } = require('@prisma/client')
 
+const prisma = new PrismaClient()
+
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config()
+}
 
 const app = express()
 app.use(cors())
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 
-app.get('/my-cats', (req, res) => {
-    res.json([
-        {
-            name: 'cats'
+app.get('/my-cats', async (req, res) => {
+    const cats = await prisma.catUser.findMany()
+    
+    res.json(cats)
+})
+
+app.get('/cats', async (req, res) => {
+    console.log(req.query.limit)
+    console.log(req.page)
+    const cats = await getCats(req.query.limit, req.query.page)
+    const catArray = []
+
+    for (const cat of cats) {
+        if(cat.name === 'Malayan') continue;
+        const catData = {...cat}
+        if(!cat.image) {
+            let catDataImage = await getCatImage(cat.id)
+            catData.image = catDataImage[0]
         }
-    ])
+
+        catArray.push(catData)
+    }
+
+    res.json(catArray)
+})
+
+app.post('/add-cat', async (req, res) => {
+    const catId = req.query.catId
+    const catName = req.query.catName
+    console.log(catId)
+    console.log(catName)
+
+    try {
+        const data = await prisma.catUser.create({
+            data: {
+                catId: catId,
+                catName: catName
+            }
+        })
+    
+        res.json([{
+            cat: data
+        }])
+    } catch(err) {
+        if (err instanceof Prisma.PrismaClientKnownRequestError) {
+            // The .code property can be accessed in a type-safe manner
+            if (err.code === 'P2002') {
+              console.log(
+                'There is a unique constraint violation, a new user cannot be created with this email'
+              )
+            }
+          }
+        
+        res.json([{
+            error: 'There is a unique constraint violation, a new user cannot be created with this email'
+        }])
+    }
 })
 
 
