@@ -16,7 +16,7 @@ app.get('/my-cats', (req, res) => {
 })
 
 
-if (NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'production') {
     app.listen(3000, '192.168.1.2',() => {
         console.log('server on port 3000')
     })
