@@ -41,16 +41,19 @@ app.get('/cats', async (req, res) => {
 })
 
 app.post('/add-cat', async (req, res) => {
-    const catId = req.query.catId
-    const catName = req.query.catName
+    const catId = req.body.catId
+    const catName = req.body.catName
+    const catImage = req.body.catImage
     console.log(catId)
     console.log(catName)
+    console.log(catImage)
 
     try {
         const data = await prisma.catUser.create({
             data: {
                 catId: catId,
-                catName: catName
+                catName: catName,
+                catImage
             }
         })
     

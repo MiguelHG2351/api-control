@@ -11,6 +11,7 @@ model CatUser {
   id          Int           @id @default(autoincrement())
   catId       String        @unique
   catName     String
+  catImage    String
   createdAt   DateTime      @default(now())
   CatRegister CatRegister[]
 }
