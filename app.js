@@ -67,6 +67,31 @@ app.post('/add-cat', async (req, res) => {
     }
 })
 
+app.post('/add-register', async (req, res) => {
+    const name = req.body.name
+    const catUserId = req.body.catUserId
+    
+    const register = await prisma.catRegister.create({
+        data: {
+            name,
+            catUserId
+        }
+    })
+
+    res.json(register)
+})
+
+app.get('/cat-register', async (req, res) => {
+    const catId = req.query.catId
+    console.log(catId)
+    const register = await prisma.catRegister.findMany({
+        where: {
+            catUserId: catId - 0
+        }
+    })
+
+    res.json(register)
+})
 
 if (process.env.NODE_ENV !== 'production') {
     app.listen(3000, '192.168.1.2',() => {

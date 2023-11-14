@@ -18,7 +18,8 @@ model CatUser {
 
 model CatRegister {
   id        Int      @id @default(autoincrement())
-  catUserId Int
+  name      String
+  catUserId Int 
   createdAt DateTime @default(now())
 
   catUser CatUser @relation(fields: [catUserId], references: [id])
