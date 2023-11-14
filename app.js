@@ -1,7 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 const { getCats, getCatImage } = require('./utils/api')
-const { PrismaClient, Prisma } = require('@prisma/client')
+const { PrismaClient } = require('@prisma/client')
 
 const prisma = new PrismaClient()
 
@@ -61,15 +61,6 @@ app.post('/add-cat', async (req, res) => {
             cat: data
         }])
     } catch(err) {
-        if (err instanceof Prisma.PrismaClientKnownRequestError) {
-            // The .code property can be accessed in a type-safe manner
-            if (err.code === 'P2002') {
-              console.log(
-                'There is a unique constraint violation, a new user cannot be created with this email'
-              )
-            }
-          }
-        
         res.json([{
             error: 'There is a unique constraint violation, a new user cannot be created with this email'
         }])
